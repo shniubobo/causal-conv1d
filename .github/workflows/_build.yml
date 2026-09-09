@@ -188,22 +188,11 @@ jobs:
         run: |
           ls dist
 
-      - name: Get Release with tag
-        id: get_current_release
-        uses: joutvhu/get-release@v1
+      - name: Upload Artifacts
+        id: upload_artifacts
+        uses: actions/upload-artifact@v7
         with:
-          tag_name: ${{ inputs.release-version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset
-        id: upload_release_asset
-        if: inputs.upload-to-release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: ./dist/${{env.wheel_name}}
-          asset_name: ${{env.wheel_name}}
-          asset_content_type: application/*
+          name: ${{env.wheel_name}}
+          path: ./dist/${{env.wheel_name}}
+          if-no-files-found: error
+          archive: false
